@@ -3,6 +3,7 @@ import time
 import hmac
 import hashlib
 import base64
+from pathlib import Path
 import urllib
 from urllib.parse import urlencode
 
@@ -33,9 +34,31 @@ def kraken_get_something(headers, uri_path, post_data):
     kraken_headers['API-Sign'] = kraken_signature(post_data, uri_path)
     response = requests.post(url, data=post_data, headers=headers)
     result = response.json()
+    return result
 
-    print(result)
+
+def get_asset_pairs():
+    asset_pairs = kraken_get_something(kraken_headers, '/0/public/AssetPairs', {})
+    asset_pairs_string = ','.join(str(v) for v in asset_pairs['result'].keys())
+    return asset_pairs_string
 
 
-kraken_get_something(kraken_headers, '/0/public/Ticker', {'pair': 'BCHUSD'})
-kraken_get_something(kraken_headers, '/0/public/Time', {})
+def kraken_save_tickers():
+    tickers_path = Path("/tickers.txt")
+    if tickers_path.is_file():
+        type_open = "x"
+    else:
+        type_open = "w"
+
+    f = open('tickers.txt', type_open)
+    f.write(str(kraken_get_something(kraken_headers, '/0/public/Ticker', {'pair': get_asset_pairs()})['result']))
+    f.close()
+
+# Private
+# kraken_get_something(kraken_headers, '/0/private/Balance', {}) -> Balance de notre compte (tous cryptoactifs)
+# kraken_get_something(kraken_headers, '/0/private/OpenOrders', {}) -> Ordres ouverts / en attente
+
+# Public
+# kraken_get_something(kraken_headers, '/0/public/Ticker', {'pair': get_asset_pairs()}) -> Tous les tickers
+# kraken_get_something(kraken_headers, '/0/public/Ticker', {'pair': 'BCHUSD'}) -> Pour récupérer le prix d'un Ticker
+# kraken_get_something(kraken_headers, '/0/public/Time', {}) -> Récupérer le temps serveur Kraken
