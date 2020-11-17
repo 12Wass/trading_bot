@@ -1,5 +1,3 @@
-import json
-
 import requests
 import time
 import hmac
@@ -29,48 +27,6 @@ def kraken_signature(post_data, uri_path):
     return kraken_signature_digest
 
 
-def kraken_server_time(headers, kraken_nonce=kraken_generate_nonce()):
-    uri_path = '/0/public/Time'
-    url = url_path + uri_path
-    kraken_post_data = {
-        'nonce': kraken_nonce
-    }
-    kraken_headers['API-Sign'] = kraken_signature(kraken_post_data, uri_path)
-    response = requests.post(url, data=kraken_post_data, headers=headers)
-    result = response.json()
-
-    print(result)
-
-
-def kraken_account_balance(headers):
-    uri_path = '/0/private/Balance'
-    url = url_path + uri_path
-    kraken_post_data = {
-        'nonce': kraken_generate_nonce()
-    }
-
-    kraken_headers['API-Sign'] = kraken_signature(kraken_post_data, uri_path)
-    response = requests.post(url, data=kraken_post_data, headers=headers)
-    result = response.json()
-
-    print(result)
-
-
-def kraken_get_tickers(headers):
-    uri_path = '/0/public/Ticker'
-    url = url_path + uri_path
-    kraken_post_data = {
-        'nonce': kraken_generate_nonce(),
-        'pair': 'BCHUSD'
-    }
-
-    kraken_headers['API-Sign'] = kraken_signature(kraken_post_data, uri_path)
-    response = requests.post(url, data=kraken_post_data, headers=headers)
-    result = response.json()
-
-    print(result)
-
-
 def kraken_get_something(headers, uri_path, post_data):
     url = url_path + uri_path
     post_data['nonce'] = kraken_generate_nonce()
@@ -83,6 +39,3 @@ def kraken_get_something(headers, uri_path, post_data):
 
 kraken_get_something(kraken_headers, '/0/public/Ticker', {'pair': 'BCHUSD'})
 kraken_get_something(kraken_headers, '/0/public/Time', {})
-# kraken_server_time(kraken_headers)
-# kraken_account_balance(kraken_headers)
-# kraken_get_tickers(kraken_headers)
