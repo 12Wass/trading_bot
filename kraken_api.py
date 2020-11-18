@@ -9,9 +9,9 @@ from pathlib import Path
 import urllib
 from urllib.parse import urlencode
 
-kraken_secret_key = 'XWSrt1YDjsg3nh3SzeZsT+zSkA1MHaq5hjODD0ahxF5vKbw/+CHTGBhZWtmTQuFOajQa/rL4LCvA5b6we4bRAw=='
+kraken_secret_key = ''
 kraken_headers = {
-    'API-Key': '6/oSfuiattP+tdSD4leSF11XYGHLSJgc8dcBIGgBBsNrsd68DC2K0ir8'
+    'API-Key': ''
 }
 url_path = 'https://api.kraken.com'
 
